@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message Dashboard | Ange Gloria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-container glass">
+      <h1>📧 Message Dashboard</h1>
+      <p>Enter your password to access messages</p>
+      <form id="login-form">
+        <div class="form-group">
+          <input type="password" id="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Access Dashboard</button>
+      </form>
+      <p class="login-error" id="login-error"></p>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div id="dashboard-content" class="dashboard-content" style="display: none;">
+    <header class="dashboard-header">
+      <div class="container">
+        <h1>📧 Message Dashboard</h1>
+        <div class="dashboard-stats">
+          <div class="stat-card glass">
+            <span class="stat-number" id="total-messages">0</span>
+            <span class="stat-label">Total Messages</span>
+          </div>
+          <div class="stat-card glass">
+            <span class="stat-number" id="unread-messages">0</span>
+            <span class="stat-label">Unread</span>
+          </div>
+        </div>
+        <button id="logout-btn" class="btn btn-ghost">Logout</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="container">
+        <div class="dashboard-controls">
+          <button id="refresh-btn" class="btn btn-ghost">🔄 Refresh</button>
+          <button id="mark-all-read-btn" class="btn btn-ghost">✓ Mark All Read</button>
+          <button id="delete-all-btn" class="btn btn-ghost">🗑️ Delete All</button>
+        </div>
+
+        <div id="messages-container" class="messages-container">
+          <div class="loading">Loading messages...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Message Modal -->
+    <div id="message-modal" class="modal" style="display: none;">
+      <div class="modal-content glass">
+        <div class="modal-header">
+          <h2 id="modal-subject">Message Subject</h2>
+          <button id="close-modal" class="btn btn-ghost">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="message-meta">
+            <div class="meta-item">
+              <span class="meta-label">From:</span>
+              <span id="modal-from"></span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Email:</span>
+              <span id="modal-email"></span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Date:</span>
+              <span id="modal-date"></span>
+            </div>
+          </div>
+          <div class="message-content">
+            <p id="modal-message"></p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="reply-btn" class="btn btn-primary">Reply via Gmail</button>
+          <button id="delete-btn" class="btn btn-ghost">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
