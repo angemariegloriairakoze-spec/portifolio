@@ -3,7 +3,17 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const path = require('path');
-require('dotenv').config();
+// require('dotenv').config(); // Disabled to prevent port conflicts
+
+// Database configuration (manual setup since dotenv is disabled)
+process.env.DB_HOST = 'localhost';
+process.env.DB_USER = 'root';
+process.env.DB_PASSWORD = '';
+process.env.DB_NAME = 'portfolio_db';
+
+// Email configuration (manual setup since dotenv is disabled)
+process.env.EMAIL_USER = 'angemariegloriairakoze@gmail.com';
+process.env.EMAIL_PASS = 'krpb hfai vjoe prtg';
 
 // Database imports
 const { testConnection, executeQuery } = require('./database/db_connection');
@@ -14,13 +24,14 @@ const CommentModel = require('./database/models/CommentModel');
 const UserModel = require('./database/models/UserModel');
 
 const app = express();
-const PORT = process.env.PORT || 1000;
+const DEFAULT_PORT = 8000;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname)));
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Email configuration - development mode by default
 let transporter;
@@ -274,12 +285,12 @@ app.get('/api/dashboard/messages', async (req, res) => {
 
 // Serve the main portfolio
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 // Handle SPA routing - serve index.html for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 // Start server with database connection
@@ -301,13 +312,27 @@ async function startServer() {
       console.log('⚠️ Database connection failed - running without database');
     }
     
-    // Start the server
-    app.listen(PORT, () => {
-      console.log(`🚀 Portfolio server running on http://localhost:${PORT}`);
-      console.log(`📧 Email functionality configured for: angemariegloriairakoze@gmail.com`);
-      console.log(`🗄️ Database: ${dbConnected ? 'Connected and Initialized' : 'Disconnected'}`);
-      console.log(`📁 Serving frontend from: ${__dirname}`);
-    });
+    // Start the server with automatic port detection
+    function startServerOnPort(port) {
+      const server = app.listen(port, () => {
+        console.log(`🚀 Portfolio server running on http://localhost:${port}`);
+        console.log(`📧 Email functionality configured for: angemariegloriairakoze@gmail.com`);
+        console.log(`🗄️ Database: ${dbConnected ? 'Connected and Initialized' : 'Disconnected'}`);
+        console.log(`📁 Serving frontend from: ${__dirname}`);
+      });
+      
+      server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          console.log(`⚠️ Port ${port} is in use, trying next port...`);
+          startServerOnPort(port + 1);
+        } else {
+          console.error('Failed to start server:', err);
+          process.exit(1);
+        }
+      });
+    }
+    
+    startServerOnPort(DEFAULT_PORT);
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);

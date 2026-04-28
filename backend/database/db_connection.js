@@ -4,19 +4,15 @@
  */
 
 const mysql = require('mysql2/promise');
-require('dotenv').config();
 
-// Database configuration
+// Database configuration (manual setup since dotenv is disabled)
 const dbConfig = {
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'portfolio_db',
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'portfolio_db',
     charset: 'utf8mb4',
     timezone: '+00:00',
-    acquireTimeout: 60000,
-    timeout: 60000,
-    reconnect: true,
     connectionLimit: 10,
     queueLimit: 0
 };
